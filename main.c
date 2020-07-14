@@ -17,8 +17,8 @@ int main (int argc, char *argv[])
     int	ret = 0;
 
     if (argc != 3) {
-	printf ("Usage: %s config_file sock_port\n", argv[0]);
-	return 0;
+        printf ("Usage: %s config_file sock_port\n", argv[0]);
+        return 0;
     }    
 
     ret = parse_config_file (argv[1]);
@@ -38,7 +38,7 @@ int main (int argc, char *argv[])
     }
     check (ret == 0, "Failed to run workload");
 
- error:
+error:
     close_ib_connection ();
     destroy_env         ();
     return ret;
@@ -49,9 +49,9 @@ int init_env ()
     char fname[64] = {'\0'};
 
     if (config_info.is_server) {
-	sprintf (fname, "server[%d].log", config_info.rank);
+        sprintf (fname, "server[%d].log", config_info.rank);
     } else {
-	sprintf (fname, "client[%d].log", config_info.rank);
+        sprintf (fname, "client[%d].log", config_info.rank);
     }
     log_fp = fopen (fname, "w");
     check (log_fp != NULL, "Failed to open log file");
@@ -60,7 +60,7 @@ int init_env ()
     print_config_info ();
 
     return 0;
- error:
+error:
     return -1;
 }
 
