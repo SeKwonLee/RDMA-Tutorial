@@ -50,47 +50,47 @@ void *client_thread_func (void *arg)
 
 
     while (ops_count < TOT_NUM_OPS) {
-	/* loop till receive a msg from server */
-	while ((*msg_start != 'A') && (*msg_end != 'A')) {
-	}
+        /* loop till receive a msg from server */
+        while ((*msg_start != 'A') && (*msg_end != 'A')) {
+        }
 
-	/* reset recv buffer */
-	memset ((char *)msg_start, '\0', msg_size);
+        /* reset recv buffer */
+        memset ((char *)msg_start, '\0', msg_size);
 
-	/* send a msg back to the server */
-	ops_count += 1;
-	if ((ops_count % SIG_INTERVAL) == 0) {
-	    ret = post_write_signaled (msg_size, lkey, 0, qp, send_buf_ptr, raddr, rkey);
-	} else {
-	    ret = post_write_unsignaled (msg_size, lkey, 0, qp, send_buf_ptr, raddr, rkey);
-	}
-	
-	buf_offset = (buf_offset + msg_size) % buf_size;
-	msg_start  = buf_ptr + buf_offset;
-	msg_end    = msg_start + msg_size - 1;
-	raddr      = raddr_base + buf_offset;
+        /* send a msg back to the server */
+        ops_count += 1;
+        if ((ops_count % SIG_INTERVAL) == 0) {
+            ret = post_write_signaled (msg_size, lkey, 0, qp, send_buf_ptr, raddr, rkey);
+        } else {
+            ret = post_write_unsignaled (msg_size, lkey, 0, qp, send_buf_ptr, raddr, rkey);
+        }
 
-	if (ops_count == NUM_WARMING_UP_OPS) {
-	    gettimeofday (&start, NULL);
-	}
+        buf_offset = (buf_offset + msg_size) % buf_size;
+        msg_start  = buf_ptr + buf_offset;
+        msg_end    = msg_start + msg_size - 1;
+        raddr      = raddr_base + buf_offset;
 
-	n = ibv_poll_cq (cq, num_wc, wc);
-	debug ("ops_count = %ld", ops_count);
+        if (ops_count == NUM_WARMING_UP_OPS) {
+            gettimeofday (&start, NULL);
+        }
+
+        n = ibv_poll_cq (cq, num_wc, wc);
+        debug ("ops_count = %ld", ops_count);
     }
 
     gettimeofday (&end, NULL);
     /* dump statistics */
     duration   = (double)((end.tv_sec - start.tv_sec) * 1000000 + 
-			  (end.tv_usec - start.tv_usec));
+            (end.tv_usec - start.tv_usec));
     throughput = (double)(ops_count) / duration;
     log ("thread[%ld]: throughput = %f (Mops/s)",  thread_id, throughput);
 
     free (wc);
     pthread_exit ((void *)0);
 
- error:
+error:
     if (wc != NULL) {
-    	free (wc);
+        free (wc);
     }
     pthread_exit ((void *)-1);
 }
@@ -100,13 +100,13 @@ int run_client ()
     int		ret	    = 0;
     long	num_threads = 1;
     long	i	    = 0;
-    
+
     pthread_t	   *client_threads = NULL;
     pthread_attr_t  attr;
     void	   *status;
 
     log (LOG_SUB_HEADER, "Run Client");
-    
+
     /* initialize threads */
     pthread_attr_init (&attr);
     pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_JOINABLE);
@@ -115,16 +115,16 @@ int run_client ()
     check (client_threads != NULL, "Failed to allocate client_threads.");
 
     for (i = 0; i < num_threads; i++) {
-	ret = pthread_create (&client_threads[i], &attr, 
-			      client_thread_func, (void *)i);
-	check (ret == 0, "Failed to create client_thread[%ld]", i);
+        ret = pthread_create (&client_threads[i], &attr, 
+                client_thread_func, (void *)i);
+        check (ret == 0, "Failed to create client_thread[%ld]", i);
     }
 
     bool thread_ret_normally = true;
     for (i = 0; i < num_threads; i++) {
-	ret = pthread_join (client_threads[i], &status);
-	check (ret == 0, "Failed to join client_thread[%ld].", i);
-	if ((long)status != 0) {
+        ret = pthread_join (client_threads[i], &status);
+        check (ret == 0, "Failed to join client_thread[%ld].", i);
+        if ((long)status != 0) {
             thread_ret_normally = false;
             log ("thread[%ld]: failed to execute", i);
         }
@@ -138,11 +138,11 @@ int run_client ()
     free (client_threads);
     return 0;
 
- error:
+error:
     if (client_threads != NULL) {
         free (client_threads);
     }
-    
+
     pthread_attr_destroy (&attr);
     return -1;
 }

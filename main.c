@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "debug.h"
 #include "config.h"
@@ -17,20 +18,20 @@ int main (int argc, char *argv[])
     int	ret = 0;
 
     if (argc == 5) {
-	config_info.is_server	     = false;
-	config_info.server_name	     = argv[1];
-	config_info.msg_size	     = atoi (argv[2]); 
-	config_info.num_concurr_msgs = atoi (argv[3]);
-	config_info.sock_port	     = argv[4];
+        config_info.is_server	     = false;
+        config_info.server_name	     = argv[1];
+        config_info.msg_size	     = atoi (argv[2]); 
+        config_info.num_concurr_msgs = atoi (argv[3]);
+        config_info.sock_port	     = argv[4];
     } else if (argc == 4) {
-	config_info.is_server	     = true;
-	config_info.msg_size	     = atoi (argv[1]); 
-	config_info.num_concurr_msgs = atoi (argv[2]);
-	config_info.sock_port	     = argv[3];
+        config_info.is_server	     = true;
+        config_info.msg_size	     = atoi (argv[1]); 
+        config_info.num_concurr_msgs = atoi (argv[2]);
+        config_info.sock_port	     = argv[3];
     } else {
-	printf ("Server: %s msg_size num_concurr_msgs sock_port\n", argv[0]);
-	printf ("Client: %s server_name msg_size num_concurr_msgs sock_port\n", argv[0]);
-	return 0;
+        printf ("Server: %s msg_size num_concurr_msgs sock_port\n", argv[0]);
+        printf ("Client: %s server_name msg_size num_concurr_msgs sock_port\n", argv[0]);
+        return 0;
     }    
 
     ret = init_env ();
@@ -46,7 +47,7 @@ int main (int argc, char *argv[])
     }
     check (ret == 0, "Failed to run workload");
 
- error:
+error:
     close_ib_connection ();
     destroy_env         ();
     return ret;
@@ -55,9 +56,9 @@ int main (int argc, char *argv[])
 int init_env ()
 {
     if (config_info.is_server) {
-	log_fp = fopen ("server.log", "w");
+        log_fp = fopen ("server.log", "w");
     } else {
-	log_fp = fopen ("client.log", "w");
+        log_fp = fopen ("client.log", "w");
     }
     check (log_fp != NULL, "Failed to open log file");
 
@@ -65,7 +66,7 @@ int init_env ()
     print_config_info ();
 
     return 0;
- error:
+error:
     return -1;
 }
 
