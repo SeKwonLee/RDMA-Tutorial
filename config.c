@@ -68,11 +68,11 @@ int parse_node_list (char *line, char ***node_list)
     }
 
     int k = 0, node_ind = start;
-    
+
     for (k = 0; k < num_nodes; k++) {
         (*node_list)[k] = (char *) calloc (128, sizeof(char));
         check ((*node_list)[k] != NULL,
-               "Failed to allocate node_list[%d]", k);
+                "Failed to allocate node_list[%d]", k);
 
         if (strstr(node_name_prefix, "mnemosyne")) {
             sprintf ((*node_list)[k], "mnemosyne%02d", node_ind);
@@ -85,7 +85,7 @@ int parse_node_list (char *line, char ***node_list)
 
     return num_nodes;
 
- error:
+error:
     return -1;
 }
 
@@ -128,7 +128,7 @@ int get_rank ()
     check (config_info.rank >= 0, "Failed to get rank for node: %s", hostname);
 
     return 0;
- error:
+error:
     return -1;
 }
 
@@ -150,7 +150,7 @@ int parse_config_file (char *fname)
 
         clean_up_line (line);
 
-	if (strstr (line, "servers:")) {
+        if (strstr (line, "servers:")) {
             attr = ATTR_SERVERS;
             continue;
         } else if (strstr (line, "clients:")) {
@@ -164,7 +164,7 @@ int parse_config_file (char *fname)
             continue;
         }
 
-	if (attr == ATTR_SERVERS) {
+        if (attr == ATTR_SERVERS) {
             ret = parse_node_list (line, &config_info.servers);
             check (ret > 0, "Failed to get server list");
             config_info.num_servers = ret;
@@ -175,13 +175,13 @@ int parse_config_file (char *fname)
         } else if (attr == ATTR_MSG_SIZE) {
             config_info.msg_size = atoi(line);
             check (config_info.msg_size > 0,
-                   "Invalid Value: msg_size = %d",
-                   config_info.msg_size);
+                    "Invalid Value: msg_size = %d",
+                    config_info.msg_size);
         } else if (attr == ATTR_NUM_CONCURR_MSGS) {
             config_info.num_concurr_msgs = atoi(line);
             check (config_info.num_concurr_msgs > 0,
-                   "Invalid Value: num_concurr_msgs = %d",
-                   config_info.num_concurr_msgs);
+                    "Invalid Value: num_concurr_msgs = %d",
+                    config_info.num_concurr_msgs);
         }
 
         attr = 0;
@@ -194,7 +194,7 @@ int parse_config_file (char *fname)
 
     return 0;
 
- error:
+error:
     if (fp != NULL) {
         fclose (fp);
     }
@@ -231,14 +231,14 @@ void print_config_info ()
     log (LOG_SUB_HEADER, "Configuraion");
 
     if (config_info.is_server) {
-	log ("is_server                 = %s", "true");
+        log ("is_server                 = %s", "true");
     } else {
-	log ("is_server                 = %s", "false");
+        log ("is_server                 = %s", "false");
     }
     log ("rank                      = %d", config_info.rank);
     log ("msg_size                  = %d", config_info.msg_size);
     log ("num_concurr_msgs          = %d", config_info.num_concurr_msgs);
     log ("sock_port                 = %s", config_info.sock_port);
-    
+
     log (LOG_SUB_HEADER, "End of Configuraion");
 }
